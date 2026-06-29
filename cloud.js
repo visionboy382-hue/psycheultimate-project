@@ -1,5 +1,5 @@
 /* ============================================================
-   PSYCHE v21  ·  PRISM personality engine
+   PSYCHE v22  ·  PRISM personality engine
    Framework & app by Aryan S
    Self-contained · offline · zero AI / zero network dependency
    ============================================================ */
@@ -316,8 +316,11 @@ function viewHome() {
     prism +
     '<button class="btn accent" data-action="start">' + (hasResult ? 'Take it again' : 'Start the assessment') + ' &nbsp;→</button>' +
     resume + lastCard +
-    '<div class="divider"></div>' +
-    '<p class="mono" style="text-align:center;color:var(--faint)">Psyche · PRISM engine · <b style="color:var(--mut)">Built by ' + esc(AUTHOR.name) + '</b></p>';
+    '<div class="colophon">' +
+      '<svg class="mark" viewBox="0 0 42 30" fill="none"><line x1="2" y1="16" x2="15" y2="16" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round"/><polygon points="15,5 25,25 5,25" fill="color-mix(in srgb,var(--accent) 10%,transparent)" stroke="var(--ink)" stroke-width="1.4"/><g stroke-width="1.9" stroke-linecap="round"><line x1="20" y1="16" x2="40" y2="8" stroke="#7c3aed"/><line x1="20" y1="16" x2="40" y2="13" stroke="#2563eb"/><line x1="20" y1="16" x2="40" y2="17" stroke="#d97706"/><line x1="20" y1="16" x2="40" y2="22" stroke="#e11d48"/></g></svg>' +
+      '<div class="by">An instrument by <b>' + esc(AUTHOR.name) + '</b></div>' +
+      '<div class="role">PRISM framework · engine · design</div>' +
+    '</div>';
 }
 
 /* ---- ASSESSMENT ---- */
@@ -619,7 +622,7 @@ function openSettings() {
       '<div class="card pa mt24"><div class="eb">About</div>' +
         '<p class="sub mt8"><b style="color:var(--ink)">Psyche</b> is a personality instrument built on <b style="color:var(--ink)">PRISM</b> — Perception, Response, Identity, Social, Motivation — an original framework distinct from MBTI. It runs entirely on your device: no accounts, no servers, no AI.</p>' +
         '<p class="sub mt14">PRISM framework, engine, and app — <b style="color:var(--ink)">created by ' + esc(AUTHOR.name) + '</b>.</p>' +
-        '<p class="mono mt14" style="color:var(--faint)">Psyche v21 · accounts + sync</p></div>' +
+        '<p class="mono mt14" style="color:var(--faint)">Psyche v22 · accounts, sync + refreshed UI</p></div>' +
     '</div></div>';
   openSheet(html);
 }
@@ -638,7 +641,7 @@ function logoSVG() {
 }
 function playCredits(headline, cb) {
   var root = el('<div class="splashroot">' + logoSVG() +
-    '<div class="spword">Psyche<span class="vv">v21</span></div>' +
+    '<div class="spword">Psyche<span class="vv">v22</span></div>' +
     '<div class="spcred">Built by <b>' + esc(AUTHOR.name) + '</b></div>' +
     '<div class="spsmall">' + esc(headline || 'The PRISM personality engine') + '</div></div>');
   $('#app').appendChild(root);
@@ -841,7 +844,7 @@ document.addEventListener('click', function (e) {
 
 /* ---------------- DATA PORTABILITY ---------------- */
 function exportData() {
-  var blob = new Blob([JSON.stringify({ result: state.result, journal: state.journal, settings: state.settings, v: 21 }, null, 2)], { type: 'application/json' });
+  var blob = new Blob([JSON.stringify({ result: state.result, journal: state.journal, settings: state.settings, v: 22 }, null, 2)], { type: 'application/json' });
   var url = URL.createObjectURL(blob), a = document.createElement('a');
   a.href = url; a.download = 'psyche-backup.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
   toast('Backup downloaded');

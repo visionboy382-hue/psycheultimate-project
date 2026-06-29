@@ -1,74 +1,77 @@
-# Psyche v21 — activating Google + Email-OTP sign-in
+# Psyche v21 — fresh Supabase project + Google/OTP sign-in
 
-The code is done. These are the **dashboard toggles** that make it work. No schema
-changes — your `readings.user_id` and `user_readings` table already exist with
-correct RLS, so sign-in just starts populating them.
-
-Project ref: `mqinktymjwsonqesazub`
+You're standing up a **new** Supabase project. Order matters: provision the DB,
+then config.js, then auth providers, then deploy. The app's schema already
+expects all of this — no code changes needed, only setup.
 
 ---
 
-## 1. URL configuration (do this first — both flows need it)
+## Step 1 — Create the project + database
+
+1. supabase.com → **New project**. Pick a name + region (closest to your users).
+   Save the database password somewhere; you rarely need it again.
+2. When it's ready: **Project Settings → API**. Copy two things:
+   - **Project URL**  →  `https://<NEW-REF>.supabase.co`
+   - **anon / publishable key**
+3. **SQL Editor → New query** → paste all of `supabase/schema.sql` → **Run**.
+   (Creates `readings`, `user_readings`, the `get_stats` function, and all RLS
+   policies for both `anon` and `authenticated`.)
+4. **SQL Editor → New query** → paste all of `supabase/seed.sql` → **Run**.
+   This populates the readings table so rarity/percentile stats are meaningful
+   immediately instead of empty. Skip only if you want stats to start at zero.
+
+## Step 2 — Point the app at the new project
+
+Open `config.js`, paste your two values from Step 1:
+```js
+window.PSYCHE_CONFIG = {
+  SUPABASE_URL: "https://<NEW-REF>.supabase.co",
+  SUPABASE_ANON_KEY: "<your-new-anon-key>"
+};
+```
+Until this is done the app runs offline (Cloud · off).
+
+## Step 3 — URL configuration
 
 Supabase → **Authentication → URL Configuration**
-
 - **Site URL:** `https://psyche-open-app.netlify.app`
-- **Redirect URLs:** add both
-  - `https://psyche-open-app.netlify.app`
-  - `http://localhost:*`  (so it still works when you test locally)
+- **Redirect URLs:** add `https://psyche-open-app.netlify.app` and `http://localhost:*`
 
-If the Site URL is wrong, Google sends users to the wrong place after sign-in.
+## Step 4 — Email OTP as a 6-digit CODE (not a link)
 
----
+Supabase → **Authentication → Providers → Email** → ensure Email is enabled.
+Supabase → **Authentication → Email Templates → "Magic Link"** → the body must
+contain the token, e.g.:
+```
+Your Psyche sign-in code is: {{ .Token }}
+```
+If it only has `{{ .ConfirmationURL }}`, users get a link and the 6-digit screen
+has nothing to type. `signInWithOtp` + `verifyOtp` are already wired in the app.
 
-## 2. Email OTP — make it a 6-digit CODE (not a magic link)
+## Step 5 — Google OAuth
 
-Supabase → **Authentication → Providers → Email**
-- Make sure **Email** is enabled.
-
-Supabase → **Authentication → Email Templates → "Magic Link"**
-- The template must contain the token, e.g.:
-  ```
-  Your Psyche sign-in code is: {{ .Token }}
-  ```
-- If it only has `{{ .ConfirmationURL }}`, users get a link, not a code, and the
-  6-digit screen in the app will have nothing to type. `{{ .Token }}` is the fix.
-
-That's it — `signInWithOtp` + `verifyOtp` are already wired in the app.
-
----
-
-## 3. Google OAuth
-
-### a) Google Cloud Console (one-time)
-1. console.cloud.google.com → create/select a project.
-2. **APIs & Services → Credentials → Create Credentials → OAuth client ID.**
-3. Application type: **Web application**.
-4. **Authorized redirect URIs** — add exactly:
+**Google Cloud Console** (console.cloud.google.com):
+1. Create/select a project → **APIs & Services → Credentials → Create
+   Credentials → OAuth client ID → Web application**.
+2. **Authorized redirect URIs** — add exactly (use your NEW ref):
    ```
-   https://mqinktymjwsonqesazub.supabase.co/auth/v1/callback
+   https://<NEW-REF>.supabase.co/auth/v1/callback
    ```
-5. Create → copy the **Client ID** and **Client Secret**.
-6. (If prompted) configure the OAuth consent screen — "External", add your email
-   as a test user so you can sign in before it's verified.
+3. Create → copy **Client ID** + **Client Secret**.
+4. Configure the consent screen ("External") and add your email as a test user.
 
-### b) Supabase
-Supabase → **Authentication → Providers → Google**
-- Enable it.
-- Paste the **Client ID** and **Client Secret** from step a.
-- Save.
+**Supabase → Authentication → Providers → Google** → enable → paste Client ID +
+Secret → Save.
 
-Done. The "Continue with Google" button now redirects to Google and back.
+## Step 6 — Deploy + verify
 
----
+Deploy the files to Netlify (method-dependent — see chat). Then hard-refresh so
+the service worker swaps v20→v21 and self-purges the old cache.
 
-## What did NOT change
-- No SQL to run. `schema.sql` already had `user_id` + `user_readings` + RLS for
-  both `anon` and `authenticated`. Anonymous readings, share links, and rarity
-  stats keep working exactly as before — sign-in is purely additive.
-
-## Quick test checklist
-- [ ] Open the app → Settings → "Email me a sign-in code" → receive 6 digits → verify → "Signed in"
-- [ ] Settings → "Continue with Google" → Google screen → returns signed in
-- [ ] Take a reading while signed in → reload on another device signed in as same account → reading is there
-- [ ] Sign out → anonymous reading + share link still works
+### Test checklist
+- [ ] Header reads **v21**
+- [ ] Settings → "Email me a sign-in code" → 6 digits arrive → verify → "Signed in"
+- [ ] Settings → "Continue with Google" → returns signed in
+- [ ] Reading made while signed in shows up after signing in on another device
+- [ ] Signed out: anonymous reading + share link still work
+- [ ] A reading's rarity stat shows a real % (confirms seed.sql ran)

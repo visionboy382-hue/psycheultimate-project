@@ -1,5 +1,5 @@
 /* ============================================================
-   PSYCHE v21 · cloud layer (Supabase)
+   PSYCHE v22 · cloud layer (Supabase)
    Entirely optional. If config.js has no keys, Cloud.ready() is
    false and every call is a safe no-op — the app stays offline.
    ============================================================ */

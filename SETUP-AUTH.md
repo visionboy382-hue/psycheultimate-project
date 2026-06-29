@@ -1,5 +1,5 @@
-/* Psyche v21 — offline-first service worker */
-const CACHE = 'psyche-v21-1';
+/* Psyche v22 — offline-first service worker */
+const CACHE = 'psyche-v22-1';
 const ASSETS = [
   './', './index.html', './app.js', './cloud.js', './config.js', './r.html',
   './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png'

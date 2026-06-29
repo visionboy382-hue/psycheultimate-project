@@ -78,6 +78,18 @@
 
   /* hero prism */
   .prismsig{position:relative;height:188px;margin:10px -4px 14px}
+  .prismsig::before{content:"";position:absolute;left:50%;top:52%;width:248px;height:248px;transform:translate(-50%,-50%);background:conic-gradient(from 205deg,#7c3aed,#2563eb,#d97706,#e11d48,#059669,#7c3aed);filter:blur(48px);opacity:.17;border-radius:50%;z-index:0;animation:auraspin 20s linear infinite}
+  body.dark .prismsig::before{opacity:.28}
+  .prismsig svg{position:relative;z-index:1}
+  @keyframes auraspin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.prismsig::before{animation:none}}
+
+  /* maker's colophon */
+  .colophon{margin-top:8px;padding-top:22px;border-top:1px solid var(--line);text-align:center}
+  .colophon .mark{width:42px;height:30px;margin:0 auto 12px;display:block}
+  .colophon .by{font-family:'Space Grotesk';font-weight:600;font-size:13.5px;color:var(--ink);letter-spacing:-.01em}
+  .colophon .by b{color:var(--accent);font-weight:700}
+  .colophon .role{font-family:'Space Mono';font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-top:6px}
 
   /* spectrum bars */
   .spectrum{display:flex;flex-direction:column;gap:14px}
@@ -218,7 +230,7 @@
       <line class="ray r5" x1="72" y1="57" x2="146" y2="84" stroke="#059669"/>
     </g>
   </svg>
-  <div class="spword">Psyche<span class="vv">v21</span></div>
+  <div class="spword">Psyche<span class="vv">v22</span></div>
   <div class="spcred">Built by <b>Aryan&nbsp;S</b></div>
   <div class="spsmall">The PRISM personality engine</div>
 </div>
@@ -226,7 +238,7 @@
   <header>
     <div class="brand">
       <svg viewBox="0 0 24 24" fill="none"><line x1="1" y1="12" x2="9" y2="12" stroke="var(--ink)" stroke-width="1.6"/><polygon points="9,5 15,19 3,19" stroke="var(--ink)" stroke-width="1.5" fill="none" transform="translate(3,0)"/><g stroke-width="1.5"><line x1="13.5" y1="12" x2="23" y2="8.5" stroke="#7c3aed"/><line x1="13.5" y1="12" x2="23" y2="11" stroke="#2563eb"/><line x1="13.5" y1="12" x2="23" y2="13.5" stroke="#d97706"/><line x1="13.5" y1="12" x2="23" y2="16" stroke="#059669"/></g></svg>
-      Psyche <span class="v">v21</span>
+      Psyche <span class="v">v22</span>
     </div>
     <button class="iconbtn" data-action="settings" aria-label="Settings">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
